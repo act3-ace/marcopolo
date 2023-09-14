@@ -1,0 +1,8 @@
+__pycache__/
+runs/
+
+# tweak vscode stuff
+.vscode/settings.json
+
+# generated config file for pre-commit hooks
+/.pre-commit-config.yaml

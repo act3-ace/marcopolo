@@ -1,0 +1,100 @@
+# Copyright (c) 2023 Mobius Logic, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+# Description:
+# Niche Info:
+# # Environmnet:
+# # Optimizer:
+# # Notes:
+
+init: "random"
+core: "Connect4"
+
+# Frequency to store gifs of agent behavior
+# If no videos are desired, put 0 as the value
+visualize_freq: 1
+
+# evaluation variables
+#  Total number of evals combined for statistics is eval_jobs*rollouts_per_eval_job
+#  same communication and balancing caveats as above
+eval_jobs: 1
+rollouts_per_eval_job: 1
+
+master_seed: 24582922
+
+max_active_envs: 1
+num_start_envs: 1
+
+mc_lower: 100
+repro_threshold: 200
+num_proposal_envs: 8
+max_admitted_envs: 1
+
+
+num_workers: 1
+
+poet_epochs: 12
+reproduction_interval: 1
+
+# Frequency to store the entire state for reload
+# Must be 1 or greater
+# If no logging is desired, put "poet_epochs" as the value
+checkpoint_interval: 1 
+checkpoint_compression: False
+
+# log pata_ec each epoch
+#  logs normalized ranks and capped scores
+log_pata_ec: True
+
+# Agent/Network structure
+model_params:
+  input_size: 84
+  output_size: 7
+  time_factor: 0
+  layers: [40, 40]
+  activations: ['np.tanh','np.tanh','np.tanh'] # relu, passthru, np.tanh, sigmoid, softmax
+  noise_bias: 0.0
+  output_noise: [False, False, False]
+  sample_output: False # set to true for softmax
+
+# uber_es optimizer
+uber_es:
+  # I'm not sure what these mean
+  l2_coeff: 0.01
+  normalize_grads_by_noise_std: True
+  returns_normalization: centered_ranks
+  # learning rate parameters
+  learning_rate: 0.01
+  lr_decay: 0.9999
+  lr_limit: 0.001
+  # noise parameters
+  noise_std: 0.1
+  noise_decay: 0.999
+  noise_limit: 0.01
+  # optimization variables
+  #  Total number of rollouts used per optimization step is optim_jobs*rollouts_per_optim_job*2
+  #  Higher rollouts_per_optim_job will reduce communication by increasing the 
+  #  job length, but may lead to poor load balancing because jobs may finish at different
+  #  times.
+  optim_jobs: 1 # how many jobs to start per agent, this is handed to the MP.Pool()
+  rollouts_per_optim_job: 1 # rollouts per job
+  optim_iters: 2
+
+# These are vestigial
+# # ICM Parameters
+# niche_params:
+#   use_icm: FALSE
+#   icm_stable_iteration: 10
+#   icm_training_gamma: 1.0
